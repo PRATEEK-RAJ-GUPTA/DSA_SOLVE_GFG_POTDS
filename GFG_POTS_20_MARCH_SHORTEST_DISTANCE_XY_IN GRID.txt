@@ -1,0 +1,63 @@
+QUESTION-->Give a N*M grid of characters 'O', 'X', and 'Y'. Find the minimum Manhattan distance between a X and a Y.
+
+Manhattan Distance :
+| row_index_x - row_index_y | + | column_index_x - column_index_y |
+
+N = 4, M = 4
+grid  = {{X, O, O, O}
+         {O, Y, O, Y}
+         {X, X, O, O}
+         {O, Y, O, O}}
+		 
+ANS-->1
+
+ANY PROBLEN ON SHORTEST DISTANCE IS SLOVED BY BFS
+HERE WE HAVE USED MULTISCORE BFS
+
+class Solution {
+  public:
+    int shortestXYDist(vector<vector<char>> grid, int N, int M) {
+        // code here
+        queue<pair<pair<int,int>,int>>q;(WILL USE TO PUT PUT 0 IN NUMBER OF X APPEARING)
+        vector<vector<int>>vis(N,vector<int>(M,0));(A 2 D REPRESENTATION OF GRID VECTOR HAVING 1 IN X PLACE OTHERWISE 0)
+        
+        for(int i=0;i<N;i++){
+            for(int j=0;j<M;j++){
+                
+                if(grid[i][j]=='X'){
+                    q.push({{i,j},0});{0,0,0}
+                    vis[i][j]=1;[[1,0,0,0],[0,0,0,0],[1,1,0,0],[0,0,0,0]]
+                }
+                
+            }
+        }
+        int ans=0;
+        /*taking vector to move up down left right*/
+        vector<int>row={1,0,-1,0}; FORM A PARTICULAR IF ONE HAS TO MOVE UP DOWN LEFT OR RIGHT
+        vector<int>col={0,1,0,-1};
+        
+        while(!q.empty()){
+            auto curr=q.front();
+            q.pop();
+            int i=curr.first.first;
+            int j=curr.first.second;
+            int dis=curr.second;
+            if(grid[i][j]=='Y'){
+                ans=dis;
+                break;
+            }
+            
+            for(int k=0;k<4;k++){
+                int m=i+row[k];
+                int n=j+col[k];
+                
+                if(m>=0 and n>=0 and n<M and m<N and !vis[m][n]){
+                    q.push({{m,n},dis+1});IF MOVED THAN DISTANCE HAS TO MBE PLUS
+                    vis[m][n]=1;
+                }
+            }
+            
+        }
+        return ans;
+    }
+};
