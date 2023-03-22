@@ -1,0 +1,87 @@
+QUESTION-->Given a string S. In one operation, you can remove the substring "pr" from the string S and get amount X or you can remove the substring "rp" and get the amount Y. 
+Find the maximum amount you can get if you perform zero or more such operations optimally.
+Input:
+X = 5, Y = 4
+S = "abppprrr"
+Output: 15
+Explanation: 
+Here, S = "abppprrr" 
+X= 5, Y=4.
+Remove "pr", new string S = "abpprr".
+Remove "pr", new string S = "abpr".
+Remove "pr", new string S = "ab".
+In total, we removed "pr" 3 times, 
+so total score is 3*X + 0*Y = 3*5 =15.
+
+ANSWER-->WHENEVER THIS TYPE OF QUESTION IS GIVEN ALWAY USE STACK.
+
+1ST LOGIC:
+
+if we consider the given string abppprrr first than in stack first a->b->p(at the time of insertion of p we will check whether previous
+element is r or not,here it is b so we insert)a->b->p->p->p->r(same condtion for r and we have a p at previous so we take out pr)
+new stack a->b->p->p->r(again same)a->b->p->r(again same condition )a->b(ultimately wec removed all )
+
+but if we get a case of 'prp' or 'rpr' continuely than what we have to do as pr and rp both has to be removed but we have to get the maximise output so we use to dlete the 
+maximise one
+so  now during the insertion we have to check whether the succesive character is p or r and which is greater
+
+now let us consider a string abcrpprrpraw in this string X=12 Y=6
+a->b->c->r(during insertion check wheather previous and front ,here it is fine)a->b->c->r->p(check previous r and front p) so remove rp )
+a->b->c->p->(first check previous than front here previous is fine so need to check front)
+a->b->c->p->r(here both previous is p and front is r so we took out pr as it value is 12)
+it we repeat this process we will be getting the total sum as 30
+
+but the abour process iswrong as the correct answer is 36 as we first remove all pr than 
+
+so the method is to find the largest string pr or rp nad first remove the largest than the smaller one
+
+code-->
+
+long long solve(int x,int y,string S){
+      //code here
+      string a="pr";
+      string b="rp";
+      if(x<y){#as we are considering only a to be greatest
+          swap(a,b);
+          swap(x,y);
+      }
+      stack<char>st;
+      long long ans=0;
+      int n=S.size();
+      for(int i=0;i<n;i++){
+          if(st.empty()){
+              st.push(S[i]);
+          }
+          else if(S[i]==a[1] and st.top()==a[0] )#if s[i]==r than it top has r
+          {
+              ans+=x;
+              st.pop();
+          }
+          else{
+              st.push(S[i]);
+          }
+      }
+      S="";
+      while(!st.empty()){
+         S+=st.top();
+         st.pop();
+      }
+      reverse(S.begin(),S.end());
+      n=S.size();
+      for(int i=0;i<n;i++){
+          if(st.empty()){
+              st.push(S[i]);
+          }
+          else if(S[i]==b[1] and st.top()==b[0]){
+              ans+=y;
+              st.pop();
+          }
+          else{
+              st.push(S[i]);
+          }
+      }
+      
+      return ans;
+      
+    }
+};
