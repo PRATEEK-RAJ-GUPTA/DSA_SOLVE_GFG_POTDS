@@ -1,0 +1,104 @@
+Given a valid expression containing only binary operators '+', '-', '*', '/' and operands, remove all the redundant parenthesis.
+
+A set of parenthesis is said to be redundant if, removing them, does not change the value of the expression.
+
+Note: The operators '+' and '-' have the same priority. '*' and '/' also have the same priority. '*' and '/' have more priority than '+' and '-'.
+Exp = (A*(B+C))
+Output: A*(B+C)
+Explanation: The outermost parenthesis
+are redundant.
+
+ANS-->LET APPLY THE BASIC
+
+for experssion as X (some operator)(experssion)
+
+ IF WE HAVE A EXP AS X*(A+B-C*D) THAN THE MULTIPLY IN THE MIDDLE AFFECT THE + - / AS WITHOUT BRACKET X*A WITH BRACKET X*(RESULT AFTER OPERATION)
+ IF WE HAVE X*(A*B*V*D) SO WE DO NOT NEED BRACKET
+ 
+ IF WE HAVE AN EXP AS X/(A+B+C/D*E) OR SIMPLY AD 8/(4/2) AND (8/4)/2 BOTH WILL FETCH DIFFERENT answer os in divide for every there has to be bracket
+ 
+ if we have + than there is no prblem as we know it will be not affect any expersion and will be operated as precedence
+ 
+ if we have - than there can a problem as a-(a+b) will be a-a-b and a-(a+b) wil be a-a-b
+ 
+for expression as (some expression) (some operator) X:(left had side)
+ * and divide will have same affect but in - this time time it will not have any effect
+ 
+ concept:
+ let us consider an expression
+ 
+ (((++))) so we will be giving to stack (((++ and on the encounter of ) we will stop.
+ now we will se what are the operator we have inside the stack and take four basic operator boolean varaible make them true if they are present inside the stack
+ and simultaneously pop those operator out until a ( is encountered
+ on encountering the ( bracket we will mark it position(j) and pop it out of the and take the positon of current ) as prev;
+ 
+ we will go on inceasing the counter i(origianl in for loop) and the number of time st.top()==( and s[i]==) we will pop out st.top() and even till when the stack is not empty
+ in a bool vector we will also mark the psotion of there ( and ) as true so that we can omit them
+ 
+ 
+ now come the core concept part:
+in left hand side expression we will have to deal with ony * and / as + and - are insignificant
+
+if(i+1<n && s[i+1]=='*') if(divi || plus || minus) continue;  says that (* *)* will not have any use of bracket but if (+ / -)* is there the bracket will be there
+if(i+1<n && Exp[i+1]=='/')if(divi || plus || min || mul) continue; says that (* + - /)/ will have effect for bracket that they are necessary so if any of the operator among + - / 8 is there we have to keep the bracket
+ if(st.empty() || (!plus && !min && !mul && !divi)) vis[prev]=vis[j]=true; says that if stack is empty or we have  +(a) so there is no need of bracket and the previous position of j and prev has not changed so make them eqaul and true;
+
+in right hand eqaution except + all will have some significance
+ else if(Exp[st.top()]=='+') vis[prev]=vis[j]=true; says that if there is only + before expression there is no need of bracket
+ else if(Exp[st.top()]=='-' && !plus && !min) vis[prev]=vis[j]=true; says that if there is a - before exp than make j=prev only when there is no + or - inside the bracket 
+ else if(Exp[st.top()]=='*' && ((divi || mul) && !plus && !min)) vis[prev]=vis[j]=true; says that if we have multiply than nothing is allowed
+ 
+ string removeBrackets(string Exp){    
+        stack<int> st;
+        int n=Exp.length();
+        vector<bool> vis(n,0);
+        for(int i=0;i<n;i++)
+        {
+            if(Exp[i]=='(' || Exp[i]=='+' || Exp[i]=='-' || Exp[i]=='/' || Exp[i]=='*')
+                st.push(i);
+            else if(Exp[i]==')')
+            {
+                bool plus=false,min=false,divi=false,mul=false;
+                while(!st.empty() && Exp[st.top()]!='(')
+                {
+                    int curr=st.top();
+                    st.pop();
+                    if(Exp[curr]=='+') plus=true;
+                    if(Exp[curr]=='-') min=true;
+                    if(Exp[curr]=='/') divi=true;
+                    if(Exp[curr]=='*') mul=true;
+                }
+                
+                int j=st.top();
+                st.pop();
+                
+                int prev=i;
+                i++;
+                while(i<n && !st.empty() && Exp[st.top()]=='(' && Exp[i]==')')
+                {
+                    vis[i]=vis[st.top()]=true;
+                    st.pop();
+                    i++;
+                }
+                i--;
+                if(i+1<n && Exp[i+1]=='*')
+                    if(divi || plus || min) continue;
+                if(i+1<n && Exp[i+1]=='/')
+                    if(divi || plus || min || mul) continue;
+                
+                if(st.empty() || (!plus && !min && !mul && !divi)) vis[prev]=vis[j]=true;
+                else if(Exp[st.top()]=='+') vis[prev]=vis[j]=true;
+                else if(Exp[st.top()]=='-' && !plus && !min) vis[prev]=vis[j]=true;
+                else if(Exp[st.top()]=='*' && ((divi || mul) && !plus && !min)) vis[prev]=vis[j]=true;
+            }
+        }
+        string ans="";
+        for(int i=0;i<n;i++)
+        {
+            if(!vis[i]) ans.push_back(Exp[i]); 
+        }
+        return ans;
+    }
+
+
+ 
