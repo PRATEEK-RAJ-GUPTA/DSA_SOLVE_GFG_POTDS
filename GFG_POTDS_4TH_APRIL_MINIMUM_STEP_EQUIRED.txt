@@ -1,0 +1,37 @@
+Given a string str consisting of only two characters 'a' and 'b'. You need to find the minimum steps required to make the string empty by removing consecutive a's and b's.
+
+Input:
+str = "bbaaabb"
+Output:
+2
+Explanation:
+Operation 1: Removal of all a's modifies str to "bbbb".
+Operation 2: Removal of all remaining b's makes str
+empty.
+Therefore, the minimum number of operations required
+is 2.
+
+
+here the solution is very simple:
+first we should count the total consecutive occurance of a nad b i.e for example if the string is aabbabbaa here b cconsecutively occurs 2 times
+if we emove this b in 2 time than we are left with a consecutive sequence
+
+so we find the mini of the consecutive repeatation of a and b and add +1 for the remaining reeatative occurance 
+
+int minSteps(string str) {
+    // Write your code here.
+    	int a=0,b=0;
+		if(str[0]=='a'){
+		    a++;
+		}else{
+		    b++;
+		}
+		for(int i=1;i<str.length();i++){
+		    if(str[i-1]=='a'&&str[i]=='b')
+		    b++;
+		    if(str[i-1]=='b'&&str[i]=='a')
+		    a++;
+		}
+		
+		return min(a,b)+1;
+}
