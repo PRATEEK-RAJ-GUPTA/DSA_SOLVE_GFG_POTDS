@@ -1,0 +1,74 @@
+Given a binary tree and a target, find the number of node in the minimum sub-tree with the given sum equal to the target which is also a binary search tree.
+Example 1:
+
+Input:
+           13
+         /    \
+       5       23
+      / \      / \
+     N   17   N   N
+         /
+        16
+Target: 38
+Output: 3
+Explanation: 5,17,16 is the smallest subtree
+with length 3.
+ 
+
+
+in BST PROBLEM WE GO FROM BOTTOM TO TOP
+CHECK FOR BST(PATA HAI KYA HOTA HAI)
+VARIABLE REQUIRED:
+SUM==FOR THE SUM
+MAXI,MINI
+root->data>leftmaxi
+root->data<rightmini
+len-->to take the length
+flag->to check if bst or not
+
+{len==0,max=-1e9,mini=1e9,sum=0,True)
+
+{1,16,16,16,True}
+
+
+class Solution {
+public:
+  int f(Node* root,int &minlen,int& sum,bool& flag,int& maxi,int& mini,int target){
+        if(root==0)return 0;
+        
+        int leftsum=0,rightsum=0;
+        bool leftflag=true,rightflag=true;
+        int leftmaxi=-1e9,rightmaxi=-1e9;
+        int leftmini=1e9,rightmini=1e9;
+        
+        int leftlen=f(root->left,minlen,leftsum,leftflag,leftmaxi,leftmini,target);
+        int rightlen=f(root->right,minlen,rightsum,rightflag,rightmaxi,rightmini,target);
+        
+        sum=root->data+leftsum+rightsum;
+        int currLen=leftlen+rightlen+1;
+        maxi=max(root->data,max(leftmaxi,rightmaxi));
+        mini=min(root->data,min(leftmini,rightmini));
+        flag=false;
+        if(root->data>leftmaxi && root->data<rightmaxi && leftflag && rightflag){
+            flag=true;
+        }
+        if(currLen<minlen && sum==target && flag)
+        {
+            minlen=currLen;
+        }
+        
+        return currLen;
+    }
+    int minSubtreeSumBST(int target, Node *root) {
+        // code here
+        int sum=0,minlen=1e9,maxi=-1e9,mini=1e9;
+        bool flag=true;
+        f(root,minlen,sum,flag,maxi,mini,target);
+        return minlen==1e9?-1:minlen;
+        
+    }
+};
+
+
+
+
